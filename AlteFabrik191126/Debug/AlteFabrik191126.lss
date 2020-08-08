@@ -1,0 +1,692 @@
+
+AlteFabrik191126.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000350  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000020  00800060  00000350  000003e4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0000000c  00800080  00800080  00000404  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  00000404  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000434  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000080  00000000  00000000  00000470  2**3
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   000009a6  00000000  00000000  000004f0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 0000054c  00000000  00000000  00000e96  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00000604  00000000  00000000  000013e2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  000000e4  00000000  00000000  000019e8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    0000038e  00000000  00000000  00001acc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    000004c7  00000000  00000000  00001e5a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000068  00000000  00000000  00002321  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	09 c0       	rjmp	.+18     	; 0x14 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	2c c1       	rjmp	.+600    	; 0x26a <__vector_8>
+  12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
+
+00000014 <__ctors_end>:
+  14:	11 24       	eor	r1, r1
+  16:	1f be       	out	0x3f, r1	; 63
+  18:	cf e9       	ldi	r28, 0x9F	; 159
+  1a:	cd bf       	out	0x3d, r28	; 61
+
+0000001c <__do_copy_data>:
+  1c:	10 e0       	ldi	r17, 0x00	; 0
+  1e:	a0 e6       	ldi	r26, 0x60	; 96
+  20:	b0 e0       	ldi	r27, 0x00	; 0
+  22:	e0 e5       	ldi	r30, 0x50	; 80
+  24:	f3 e0       	ldi	r31, 0x03	; 3
+  26:	02 c0       	rjmp	.+4      	; 0x2c <__do_copy_data+0x10>
+  28:	05 90       	lpm	r0, Z+
+  2a:	0d 92       	st	X+, r0
+  2c:	a0 38       	cpi	r26, 0x80	; 128
+  2e:	b1 07       	cpc	r27, r17
+  30:	d9 f7       	brne	.-10     	; 0x28 <__do_copy_data+0xc>
+
+00000032 <__do_clear_bss>:
+  32:	20 e0       	ldi	r18, 0x00	; 0
+  34:	a0 e8       	ldi	r26, 0x80	; 128
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	ac 38       	cpi	r26, 0x8C	; 140
+  3e:	b2 07       	cpc	r27, r18
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	2a d1       	rcall	.+596    	; 0x298 <main>
+  44:	83 c1       	rjmp	.+774    	; 0x34c <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <TxTimedByte>:
+.global TxTimedByte
+; transmit byte in r24 with bit delay in r22 - 15 instructions
+; calling code must set Tx line to idle state (high) or 1st byte may be lost
+; i.e. PORTB |= (1<<UART_Tx)
+TxTimedByte:
+	cli
+  48:	f8 94       	cli
+        sbi UART_Port-1, UART_Tx        ; set Tx line to output
+  4a:	bb 9a       	sbi	0x17, 3	; 23
+        cbi UART_Port, UART_Tx          ; start bit
+  4c:	c3 98       	cbi	0x18, 3	; 24
+	in r0, UART_Port
+  4e:	08 b2       	in	r0, 0x18	; 24
+	ldi r25, 3                      ; stop bit + idle state
+  50:	93 e0       	ldi	r25, 0x03	; 3
+
+00000052 <TxLoop>:
+TxLoop:
+        ; 8 cycle loop + delay - total = 7 + 3*r22
+	mov delayCount, r22
+  52:	26 2f       	mov	r18, r22
+
+00000054 <TxDelay>:
+TxDelay:
+; delay (3 cycle * delayCount) -1
+        dec delayCount
+  54:	2a 95       	dec	r18
+        brne TxDelay
+  56:	f1 f7       	brne	.-4      	; 0x54 <TxDelay>
+	bst r24, 0			; store lsb in T
+  58:	80 fb       	bst	r24, 0
+	bld r0, UART_Tx
+  5a:	03 f8       	bld	r0, 3
+	lsr r25
+  5c:	96 95       	lsr	r25
+	ror r24
+  5e:	87 95       	ror	r24
+	out UART_Port, r0
+  60:	08 ba       	out	0x18, r0	; 24
+        brne TxLoop
+  62:	b9 f7       	brne	.-18     	; 0x52 <TxLoop>
+  64:	18 95       	reti
+
+00000066 <serOut>:
+volatile uint16_t darkness = 0;
+volatile uint16_t lefttime = 0;
+volatile uint16_t righttime = 0;
+
+void serOut(const char* str)
+{
+  66:	cf 93       	push	r28
+  68:	df 93       	push	r29
+  6a:	ec 01       	movw	r28, r24
+	while (*str) TxTimedByte(*str++ , TXDELAY);
+  6c:	88 81       	ld	r24, Y
+  6e:	88 23       	and	r24, r24
+  70:	31 f0       	breq	.+12     	; 0x7e <serOut+0x18>
+  72:	21 96       	adiw	r28, 0x01	; 1
+  74:	6b e0       	ldi	r22, 0x0B	; 11
+  76:	e8 df       	rcall	.-48     	; 0x48 <TxTimedByte>
+  78:	89 91       	ld	r24, Y+
+  7a:	81 11       	cpse	r24, r1
+  7c:	fb cf       	rjmp	.-10     	; 0x74 <serOut+0xe>
+}
+  7e:	df 91       	pop	r29
+  80:	cf 91       	pop	r28
+  82:	08 95       	ret
+
+00000084 <serOutHex>:
+
+void serOutHex(uint16_t data2hex)
+{
+  84:	0f 93       	push	r16
+  86:	1f 93       	push	r17
+  88:	cf 93       	push	r28
+  8a:	df 93       	push	r29
+  8c:	8c 01       	movw	r16, r24
+  8e:	cc e0       	ldi	r28, 0x0C	; 12
+  90:	d0 e0       	ldi	r29, 0x00	; 0
+	/*    CONVERT UNSIGNED INTEGER 2 HEX NUMBERS  AND SHOW  IT    */
+	const uint16_t mask = 0xF;
+	for(uint8_t i=0; i<4; i++)
+	{
+		uint8_t temp = (uint8_t)((data2hex >> (4*(3-i))) & mask);
+  92:	c8 01       	movw	r24, r16
+  94:	0c 2e       	mov	r0, r28
+  96:	02 c0       	rjmp	.+4      	; 0x9c <serOutHex+0x18>
+  98:	96 95       	lsr	r25
+  9a:	87 95       	ror	r24
+  9c:	0a 94       	dec	r0
+  9e:	e2 f7       	brpl	.-8      	; 0x98 <serOutHex+0x14>
+  a0:	8f 70       	andi	r24, 0x0F	; 15
+		temp = (temp < 0xA ? temp+'0' : temp-0xA+'A');
+  a2:	8a 30       	cpi	r24, 0x0A	; 10
+  a4:	10 f4       	brcc	.+4      	; 0xaa <__stack+0xb>
+  a6:	80 5d       	subi	r24, 0xD0	; 208
+  a8:	01 c0       	rjmp	.+2      	; 0xac <__stack+0xd>
+  aa:	89 5c       	subi	r24, 0xC9	; 201
+		TxTimedByte(temp , TXDELAY);
+  ac:	6b e0       	ldi	r22, 0x0B	; 11
+  ae:	cc df       	rcall	.-104    	; 0x48 <TxTimedByte>
+  b0:	24 97       	sbiw	r28, 0x04	; 4
+
+void serOutHex(uint16_t data2hex)
+{
+	/*    CONVERT UNSIGNED INTEGER 2 HEX NUMBERS  AND SHOW  IT    */
+	const uint16_t mask = 0xF;
+	for(uint8_t i=0; i<4; i++)
+  b2:	cc 3f       	cpi	r28, 0xFC	; 252
+  b4:	8f ef       	ldi	r24, 0xFF	; 255
+  b6:	d8 07       	cpc	r29, r24
+  b8:	61 f7       	brne	.-40     	; 0x92 <serOutHex+0xe>
+	{
+		uint8_t temp = (uint8_t)((data2hex >> (4*(3-i))) & mask);
+		temp = (temp < 0xA ? temp+'0' : temp-0xA+'A');
+		TxTimedByte(temp , TXDELAY);
+	}
+}
+  ba:	df 91       	pop	r29
+  bc:	cf 91       	pop	r28
+  be:	1f 91       	pop	r17
+  c0:	0f 91       	pop	r16
+  c2:	08 95       	ret
+
+000000c4 <flashLeft>:
+
+void flashLeft(uint8_t on_ms)
+{
+	DDRB  |=  (1<<LEFT__K)|(1<<LEFT__A); // Output
+  c4:	97 b3       	in	r25, 0x17	; 23
+  c6:	91 61       	ori	r25, 0x11	; 17
+  c8:	97 bb       	out	0x17, r25	; 23
+	int8_t temp = LOOPS_PER_MS;
+	while(on_ms)
+  ca:	88 23       	and	r24, r24
+  cc:	91 f0       	breq	.+36     	; 0xf2 <flashLeft+0x2e>
+  ce:	98 e2       	ldi	r25, 0x28	; 40
+	{
+		PORTB &= ~(1<<LEFT__K);
+  d0:	c0 98       	cbi	0x18, 0	; 24
+		PORTB |=  (1<<LEFT__A);          // LED on
+  d2:	c4 9a       	sbi	0x18, 4	; 24
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  d4:	20 e1       	ldi	r18, 0x10	; 16
+  d6:	2a 95       	dec	r18
+  d8:	f1 f7       	brne	.-4      	; 0xd6 <flashLeft+0x12>
+		_delay_us(MAXXON_us);
+		PORTB |=  (1<<LEFT__K);          // LED off
+  da:	c0 9a       	sbi	0x18, 0	; 24
+  dc:	20 e1       	ldi	r18, 0x10	; 16
+  de:	2a 95       	dec	r18
+  e0:	f1 f7       	brne	.-4      	; 0xde <flashLeft+0x1a>
+		_delay_us(MINOFF_us);
+		if(temp > 0) temp--;
+  e2:	19 16       	cp	r1, r25
+  e4:	14 f4       	brge	.+4      	; 0xea <flashLeft+0x26>
+  e6:	91 50       	subi	r25, 0x01	; 1
+  e8:	02 c0       	rjmp	.+4      	; 0xee <flashLeft+0x2a>
+		else
+		{
+			temp = LOOPS_PER_MS;
+			on_ms--;
+  ea:	81 50       	subi	r24, 0x01	; 1
+		PORTB |=  (1<<LEFT__K);          // LED off
+		_delay_us(MINOFF_us);
+		if(temp > 0) temp--;
+		else
+		{
+			temp = LOOPS_PER_MS;
+  ec:	98 e2       	ldi	r25, 0x28	; 40
+
+void flashLeft(uint8_t on_ms)
+{
+	DDRB  |=  (1<<LEFT__K)|(1<<LEFT__A); // Output
+	int8_t temp = LOOPS_PER_MS;
+	while(on_ms)
+  ee:	81 11       	cpse	r24, r1
+  f0:	ef cf       	rjmp	.-34     	; 0xd0 <flashLeft+0xc>
+		{
+			temp = LOOPS_PER_MS;
+			on_ms--;
+		}
+	}
+	DDRB &= ~((1<<LEFT__K)|(1<<LEFT__A)); // InPU
+  f2:	87 b3       	in	r24, 0x17	; 23
+  f4:	8e 7e       	andi	r24, 0xEE	; 238
+  f6:	87 bb       	out	0x17, r24	; 23
+  f8:	08 95       	ret
+
+000000fa <flashRight>:
+}
+
+void flashRight(uint8_t on_ms)
+{
+	DDRB  |=  (1<<RIGHT_K)|(1<<RIGHT_A); // Output
+  fa:	97 b3       	in	r25, 0x17	; 23
+  fc:	96 60       	ori	r25, 0x06	; 6
+  fe:	97 bb       	out	0x17, r25	; 23
+	int8_t temp = LOOPS_PER_MS;
+	while(on_ms)
+ 100:	88 23       	and	r24, r24
+ 102:	91 f0       	breq	.+36     	; 0x128 <flashRight+0x2e>
+ 104:	98 e2       	ldi	r25, 0x28	; 40
+	{
+		PORTB &= ~(1<<RIGHT_K);
+ 106:	c1 98       	cbi	0x18, 1	; 24
+		PORTB |=  (1<<RIGHT_A);          // LED on
+ 108:	c2 9a       	sbi	0x18, 2	; 24
+ 10a:	20 e1       	ldi	r18, 0x10	; 16
+ 10c:	2a 95       	dec	r18
+ 10e:	f1 f7       	brne	.-4      	; 0x10c <flashRight+0x12>
+		_delay_us(MAXXON_us);
+		PORTB |=  (1<<RIGHT_K);          // LED off
+ 110:	c1 9a       	sbi	0x18, 1	; 24
+ 112:	20 e1       	ldi	r18, 0x10	; 16
+ 114:	2a 95       	dec	r18
+ 116:	f1 f7       	brne	.-4      	; 0x114 <flashRight+0x1a>
+		_delay_us(MINOFF_us);
+		if(temp > 0) temp--;
+ 118:	19 16       	cp	r1, r25
+ 11a:	14 f4       	brge	.+4      	; 0x120 <flashRight+0x26>
+ 11c:	91 50       	subi	r25, 0x01	; 1
+ 11e:	02 c0       	rjmp	.+4      	; 0x124 <flashRight+0x2a>
+		else
+		{
+			temp = LOOPS_PER_MS;
+			on_ms--;
+ 120:	81 50       	subi	r24, 0x01	; 1
+		PORTB |=  (1<<RIGHT_K);          // LED off
+		_delay_us(MINOFF_us);
+		if(temp > 0) temp--;
+		else
+		{
+			temp = LOOPS_PER_MS;
+ 122:	98 e2       	ldi	r25, 0x28	; 40
+
+void flashRight(uint8_t on_ms)
+{
+	DDRB  |=  (1<<RIGHT_K)|(1<<RIGHT_A); // Output
+	int8_t temp = LOOPS_PER_MS;
+	while(on_ms)
+ 124:	81 11       	cpse	r24, r1
+ 126:	ef cf       	rjmp	.-34     	; 0x106 <flashRight+0xc>
+		{
+			temp = LOOPS_PER_MS;
+			on_ms--;
+		}
+	}
+	DDRB &= ~((1<<RIGHT_K)|(1<<RIGHT_A)); // InPU
+ 128:	87 b3       	in	r24, 0x17	; 23
+ 12a:	89 7f       	andi	r24, 0xF9	; 249
+ 12c:	87 bb       	out	0x17, r24	; 23
+ 12e:	08 95       	ret
+
+00000130 <disCharge>:
+}
+
+uint16_t disCharge()
+{
+	lefttime  = 0;
+ 130:	10 92 87 00 	sts	0x0087, r1	; 0x800087 <lefttime+0x1>
+ 134:	10 92 86 00 	sts	0x0086, r1	; 0x800086 <lefttime>
+	righttime = 0;
+ 138:	10 92 85 00 	sts	0x0085, r1	; 0x800085 <righttime+0x1>
+ 13c:	10 92 84 00 	sts	0x0084, r1	; 0x800084 <righttime>
+	DDRB  |=  (1<<LEFT__K)|(1<<LEFT__A); // Output
+ 140:	87 b3       	in	r24, 0x17	; 23
+ 142:	81 61       	ori	r24, 0x11	; 17
+ 144:	87 bb       	out	0x17, r24	; 23
+	DDRB  |=  (1<<RIGHT_K)|(1<<RIGHT_A); // Output
+ 146:	87 b3       	in	r24, 0x17	; 23
+ 148:	86 60       	ori	r24, 0x06	; 6
+ 14a:	87 bb       	out	0x17, r24	; 23
+	PORTB &= ~(1<<LEFT__A);              // A gnd
+ 14c:	c4 98       	cbi	0x18, 4	; 24
+	PORTB &= ~(1<<RIGHT_A);              // A gnd
+ 14e:	c2 98       	cbi	0x18, 2	; 24
+	PORTB |=  (1<<LEFT__K);              // K Vcc
+ 150:	c0 9a       	sbi	0x18, 0	; 24
+	PORTB |=  (1<<RIGHT_K);              // K Vcc
+ 152:	c1 9a       	sbi	0x18, 1	; 24
+ 154:	80 e6       	ldi	r24, 0x60	; 96
+ 156:	8a 95       	dec	r24
+ 158:	f1 f7       	brne	.-4      	; 0x156 <disCharge+0x26>
+	_delay_us(LOADTIME_us);              // load
+	DDRB  &=  ~((1<<LEFT__K)|(1<<RIGHT_K)); // InPU
+ 15a:	87 b3       	in	r24, 0x17	; 23
+ 15c:	8c 7f       	andi	r24, 0xFC	; 252
+ 15e:	87 bb       	out	0x17, r24	; 23
+	PORTB &=  ~((1<<LEFT__K)|(1<<RIGHT_K)); // Input	
+ 160:	88 b3       	in	r24, 0x18	; 24
+ 162:	8c 7f       	andi	r24, 0xFC	; 252
+ 164:	88 bb       	out	0x18, r24	; 24
+	while(PINB & ((1<<LEFT__K)|(1<<RIGHT_K)))
+ 166:	86 b3       	in	r24, 0x16	; 22
+ 168:	83 70       	andi	r24, 0x03	; 3
+ 16a:	09 f1       	breq	.+66     	; 0x1ae <disCharge+0x7e>
+	{
+		lefttime +=  (PINB & (1<<LEFT__K));
+ 16c:	26 b3       	in	r18, 0x16	; 22
+ 16e:	80 91 86 00 	lds	r24, 0x0086	; 0x800086 <lefttime>
+ 172:	90 91 87 00 	lds	r25, 0x0087	; 0x800087 <lefttime+0x1>
+ 176:	42 2f       	mov	r20, r18
+ 178:	41 70       	andi	r20, 0x01	; 1
+ 17a:	50 e0       	ldi	r21, 0x00	; 0
+ 17c:	84 0f       	add	r24, r20
+ 17e:	95 1f       	adc	r25, r21
+ 180:	90 93 87 00 	sts	0x0087, r25	; 0x800087 <lefttime+0x1>
+ 184:	80 93 86 00 	sts	0x0086, r24	; 0x800086 <lefttime>
+		righttime += (PINB & (1<<RIGHT_K));
+ 188:	26 b3       	in	r18, 0x16	; 22
+ 18a:	80 91 84 00 	lds	r24, 0x0084	; 0x800084 <righttime>
+ 18e:	90 91 85 00 	lds	r25, 0x0085	; 0x800085 <righttime+0x1>
+ 192:	22 70       	andi	r18, 0x02	; 2
+ 194:	82 0f       	add	r24, r18
+ 196:	91 1d       	adc	r25, r1
+ 198:	90 93 85 00 	sts	0x0085, r25	; 0x800085 <righttime+0x1>
+ 19c:	80 93 84 00 	sts	0x0084, r24	; 0x800084 <righttime>
+ 1a0:	83 e0       	ldi	r24, 0x03	; 3
+ 1a2:	8a 95       	dec	r24
+ 1a4:	f1 f7       	brne	.-4      	; 0x1a2 <disCharge+0x72>
+ 1a6:	00 00       	nop
+	PORTB |=  (1<<LEFT__K);              // K Vcc
+	PORTB |=  (1<<RIGHT_K);              // K Vcc
+	_delay_us(LOADTIME_us);              // load
+	DDRB  &=  ~((1<<LEFT__K)|(1<<RIGHT_K)); // InPU
+	PORTB &=  ~((1<<LEFT__K)|(1<<RIGHT_K)); // Input	
+	while(PINB & ((1<<LEFT__K)|(1<<RIGHT_K)))
+ 1a8:	86 b3       	in	r24, 0x16	; 22
+ 1aa:	83 70       	andi	r24, 0x03	; 3
+ 1ac:	f9 f6       	brne	.-66     	; 0x16c <disCharge+0x3c>
+	{
+		lefttime +=  (PINB & (1<<LEFT__K));
+		righttime += (PINB & (1<<RIGHT_K));
+		_delay_us(2);
+	}
+	return(lefttime > righttime ? righttime : lefttime);
+ 1ae:	20 91 86 00 	lds	r18, 0x0086	; 0x800086 <lefttime>
+ 1b2:	30 91 87 00 	lds	r19, 0x0087	; 0x800087 <lefttime+0x1>
+ 1b6:	80 91 84 00 	lds	r24, 0x0084	; 0x800084 <righttime>
+ 1ba:	90 91 85 00 	lds	r25, 0x0085	; 0x800085 <righttime+0x1>
+ 1be:	82 17       	cp	r24, r18
+ 1c0:	93 07       	cpc	r25, r19
+ 1c2:	28 f4       	brcc	.+10     	; 0x1ce <disCharge+0x9e>
+ 1c4:	80 91 84 00 	lds	r24, 0x0084	; 0x800084 <righttime>
+ 1c8:	90 91 85 00 	lds	r25, 0x0085	; 0x800085 <righttime+0x1>
+ 1cc:	08 95       	ret
+ 1ce:	80 91 86 00 	lds	r24, 0x0086	; 0x800086 <lefttime>
+ 1d2:	90 91 87 00 	lds	r25, 0x0087	; 0x800087 <lefttime+0x1>
+}
+ 1d6:	08 95       	ret
+
+000001d8 <goes_power_down_now>:
+
+void goes_power_down_now()
+{
+	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+ 1d8:	85 b7       	in	r24, 0x35	; 53
+ 1da:	87 7e       	andi	r24, 0xE7	; 231
+ 1dc:	80 61       	ori	r24, 0x10	; 16
+ 1de:	85 bf       	out	0x35, r24	; 53
+	//cli();
+	sleep_enable();                     // macro sets the SE-bit
+ 1e0:	85 b7       	in	r24, 0x35	; 53
+ 1e2:	80 62       	ori	r24, 0x20	; 32
+ 1e4:	85 bf       	out	0x35, r24	; 53
+	sei();
+ 1e6:	78 94       	sei
+	sleep_cpu();                        // timed: sleep within 3 clock cycles
+ 1e8:	88 95       	sleep
+	sleep_disable();
+ 1ea:	85 b7       	in	r24, 0x35	; 53
+ 1ec:	8f 7d       	andi	r24, 0xDF	; 223
+ 1ee:	85 bf       	out	0x35, r24	; 53
+ 1f0:	08 95       	ret
+
+000001f2 <IIRfilter>:
+}
+
+uint16_t IIRfilter(uint8_t shiftsize, uint16_t data)
+{
+ 1f2:	0f 93       	push	r16
+ 1f4:	1f 93       	push	r17
+ 1f6:	e8 2f       	mov	r30, r24
+	static uint32_t filter;
+	filter = filter ? ((filter << shiftsize) - filter + data) >> shiftsize : FILTERSTART; // simple hotstart
+ 1f8:	00 91 80 00 	lds	r16, 0x0080	; 0x800080 <__data_end>
+ 1fc:	10 91 81 00 	lds	r17, 0x0081	; 0x800081 <__data_end+0x1>
+ 200:	20 91 82 00 	lds	r18, 0x0082	; 0x800082 <__data_end+0x2>
+ 204:	30 91 83 00 	lds	r19, 0x0083	; 0x800083 <__data_end+0x3>
+ 208:	01 15       	cp	r16, r1
+ 20a:	11 05       	cpc	r17, r1
+ 20c:	21 05       	cpc	r18, r1
+ 20e:	31 05       	cpc	r19, r1
+ 210:	e9 f0       	breq	.+58     	; 0x24c <IIRfilter+0x5a>
+ 212:	d9 01       	movw	r26, r18
+ 214:	c8 01       	movw	r24, r16
+ 216:	0e 2e       	mov	r0, r30
+ 218:	04 c0       	rjmp	.+8      	; 0x222 <IIRfilter+0x30>
+ 21a:	88 0f       	add	r24, r24
+ 21c:	99 1f       	adc	r25, r25
+ 21e:	aa 1f       	adc	r26, r26
+ 220:	bb 1f       	adc	r27, r27
+ 222:	0a 94       	dec	r0
+ 224:	d2 f7       	brpl	.-12     	; 0x21a <IIRfilter+0x28>
+ 226:	ab 01       	movw	r20, r22
+ 228:	60 e0       	ldi	r22, 0x00	; 0
+ 22a:	70 e0       	ldi	r23, 0x00	; 0
+ 22c:	40 1b       	sub	r20, r16
+ 22e:	51 0b       	sbc	r21, r17
+ 230:	62 0b       	sbc	r22, r18
+ 232:	73 0b       	sbc	r23, r19
+ 234:	84 0f       	add	r24, r20
+ 236:	95 1f       	adc	r25, r21
+ 238:	a6 1f       	adc	r26, r22
+ 23a:	b7 1f       	adc	r27, r23
+ 23c:	04 c0       	rjmp	.+8      	; 0x246 <IIRfilter+0x54>
+ 23e:	b6 95       	lsr	r27
+ 240:	a7 95       	ror	r26
+ 242:	97 95       	ror	r25
+ 244:	87 95       	ror	r24
+ 246:	ea 95       	dec	r30
+ 248:	d2 f7       	brpl	.-12     	; 0x23e <IIRfilter+0x4c>
+ 24a:	04 c0       	rjmp	.+8      	; 0x254 <IIRfilter+0x62>
+ 24c:	88 ee       	ldi	r24, 0xE8	; 232
+ 24e:	93 e0       	ldi	r25, 0x03	; 3
+ 250:	a0 e0       	ldi	r26, 0x00	; 0
+ 252:	b0 e0       	ldi	r27, 0x00	; 0
+ 254:	80 93 80 00 	sts	0x0080, r24	; 0x800080 <__data_end>
+ 258:	90 93 81 00 	sts	0x0081, r25	; 0x800081 <__data_end+0x1>
+ 25c:	a0 93 82 00 	sts	0x0082, r26	; 0x800082 <__data_end+0x2>
+ 260:	b0 93 83 00 	sts	0x0083, r27	; 0x800083 <__data_end+0x3>
+	return (uint16_t)filter;	
+}
+ 264:	1f 91       	pop	r17
+ 266:	0f 91       	pop	r16
+ 268:	08 95       	ret
+
+0000026a <__vector_8>:
+	WDTCR |=  (1 << WDTIF)|(1 << WDTIE)|(1 << WDCE);	// set watchdog interrupt mode
+	WDTCR &= ~(1 << WDE);								// clear watchdog system reset mode
+}
+
+ISR(WDT_vect)  // wakeup from sleeping
+{
+ 26a:	1f 92       	push	r1
+ 26c:	0f 92       	push	r0
+ 26e:	0f b6       	in	r0, 0x3f	; 63
+ 270:	0f 92       	push	r0
+ 272:	11 24       	eor	r1, r1
+ 274:	8f 93       	push	r24
+ 276:	9f 93       	push	r25
+	wdtcnt++;
+ 278:	80 91 8a 00 	lds	r24, 0x008A	; 0x80008a <wdtcnt>
+ 27c:	90 91 8b 00 	lds	r25, 0x008B	; 0x80008b <wdtcnt+0x1>
+ 280:	01 96       	adiw	r24, 0x01	; 1
+ 282:	90 93 8b 00 	sts	0x008B, r25	; 0x80008b <wdtcnt+0x1>
+ 286:	80 93 8a 00 	sts	0x008A, r24	; 0x80008a <wdtcnt>
+}
+ 28a:	9f 91       	pop	r25
+ 28c:	8f 91       	pop	r24
+ 28e:	0f 90       	pop	r0
+ 290:	0f be       	out	0x3f, r0	; 63
+ 292:	0f 90       	pop	r0
+ 294:	1f 90       	pop	r1
+ 296:	18 95       	reti
+
+00000298 <main>:
+
+int main(void)
+{
+	serOut("\ninit\n");	
+ 298:	80 e6       	ldi	r24, 0x60	; 96
+ 29a:	90 e0       	ldi	r25, 0x00	; 0
+ 29c:	e4 de       	rcall	.-568    	; 0x66 <serOut>
+__attribute__ ((__always_inline__))
+void wdt_enable (const uint8_t value)
+{
+	if (_SFR_IO_REG_P (_WD_CONTROL_REG))
+	{
+		__asm__ __volatile__ (
+ 29e:	d8 e1       	ldi	r29, 0x18	; 24
+ 2a0:	c8 e2       	ldi	r28, 0x28	; 40
+	return (uint16_t)filter;	
+}
+
+static inline void Initialize_WakeUpInterrupt()
+{
+	cli();
+ 2a2:	f8 94       	cli
+	wdt_reset();
+ 2a4:	a8 95       	wdr
+ 2a6:	0f b6       	in	r0, 0x3f	; 63
+ 2a8:	f8 94       	cli
+ 2aa:	a8 95       	wdr
+ 2ac:	d1 bd       	out	0x21, r29	; 33
+ 2ae:	0f be       	out	0x3f, r0	; 63
+ 2b0:	c1 bd       	out	0x21, r28	; 33
+	wdt_enable(WDTO_4S);
+	MCUSR &= ~(1 << WDRF);								// make sure that i will be able to remove the system reset mode
+ 2b2:	84 b7       	in	r24, 0x34	; 52
+ 2b4:	87 7f       	andi	r24, 0xF7	; 247
+ 2b6:	84 bf       	out	0x34, r24	; 52
+	WDTCR |=  (1 << WDTIF)|(1 << WDTIE)|(1 << WDCE);	// set watchdog interrupt mode
+ 2b8:	81 b5       	in	r24, 0x21	; 33
+ 2ba:	80 6d       	ori	r24, 0xD0	; 208
+ 2bc:	81 bd       	out	0x21, r24	; 33
+	WDTCR &= ~(1 << WDE);								// clear watchdog system reset mode
+ 2be:	81 b5       	in	r24, 0x21	; 33
+ 2c0:	87 7f       	andi	r24, 0xF7	; 247
+ 2c2:	81 bd       	out	0x21, r24	; 33
+{
+	serOut("\ninit\n");	
+	while(1)
+	{
+		Initialize_WakeUpInterrupt();
+		sei();
+ 2c4:	78 94       	sei
+		goes_power_down_now();                   // powerdown 5...7uA, no clocks, we are sleeping not long (we have interrupts)
+ 2c6:	88 df       	rcall	.-240    	; 0x1d8 <goes_power_down_now>
+		cli();
+ 2c8:	f8 94       	cli
+		darkness = IIRfilter(3, disCharge());
+ 2ca:	32 df       	rcall	.-412    	; 0x130 <disCharge>
+ 2cc:	bc 01       	movw	r22, r24
+ 2ce:	83 e0       	ldi	r24, 0x03	; 3
+ 2d0:	90 df       	rcall	.-224    	; 0x1f2 <IIRfilter>
+ 2d2:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <darkness+0x1>
+ 2d6:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <darkness>
+		serOut("wdt=");
+ 2da:	87 e6       	ldi	r24, 0x67	; 103
+ 2dc:	90 e0       	ldi	r25, 0x00	; 0
+ 2de:	c3 de       	rcall	.-634    	; 0x66 <serOut>
+		serOutHex(wdtcnt);
+ 2e0:	80 91 8a 00 	lds	r24, 0x008A	; 0x80008a <wdtcnt>
+ 2e4:	90 91 8b 00 	lds	r25, 0x008B	; 0x80008b <wdtcnt+0x1>
+ 2e8:	cd de       	rcall	.-614    	; 0x84 <serOutHex>
+		serOut("\tdarkness=");
+ 2ea:	8c e6       	ldi	r24, 0x6C	; 108
+ 2ec:	90 e0       	ldi	r25, 0x00	; 0
+ 2ee:	bb de       	rcall	.-650    	; 0x66 <serOut>
+		serOutHex(darkness);
+ 2f0:	80 91 88 00 	lds	r24, 0x0088	; 0x800088 <darkness>
+ 2f4:	90 91 89 00 	lds	r25, 0x0089	; 0x800089 <darkness+0x1>
+ 2f8:	c5 de       	rcall	.-630    	; 0x84 <serOutHex>
+		serOut("\tL=");
+ 2fa:	87 e7       	ldi	r24, 0x77	; 119
+ 2fc:	90 e0       	ldi	r25, 0x00	; 0
+ 2fe:	b3 de       	rcall	.-666    	; 0x66 <serOut>
+		serOutHex(lefttime);
+ 300:	80 91 86 00 	lds	r24, 0x0086	; 0x800086 <lefttime>
+ 304:	90 91 87 00 	lds	r25, 0x0087	; 0x800087 <lefttime+0x1>
+ 308:	bd de       	rcall	.-646    	; 0x84 <serOutHex>
+		serOut("\tR=");
+ 30a:	8b e7       	ldi	r24, 0x7B	; 123
+ 30c:	90 e0       	ldi	r25, 0x00	; 0
+ 30e:	ab de       	rcall	.-682    	; 0x66 <serOut>
+		serOutHex(righttime);
+ 310:	80 91 84 00 	lds	r24, 0x0084	; 0x800084 <righttime>
+ 314:	90 91 85 00 	lds	r25, 0x0085	; 0x800085 <righttime+0x1>
+ 318:	b5 de       	rcall	.-662    	; 0x84 <serOutHex>
+		serOut("\n");
+ 31a:	85 e6       	ldi	r24, 0x65	; 101
+ 31c:	90 e0       	ldi	r25, 0x00	; 0
+ 31e:	a3 de       	rcall	.-698    	; 0x66 <serOut>
+		if(darkness > THRESHOLD)
+ 320:	80 91 88 00 	lds	r24, 0x0088	; 0x800088 <darkness>
+ 324:	90 91 89 00 	lds	r25, 0x0089	; 0x800089 <darkness+0x1>
+ 328:	89 3e       	cpi	r24, 0xE9	; 233
+ 32a:	93 40       	sbci	r25, 0x03	; 3
+ 32c:	08 f4       	brcc	.+2      	; 0x330 <main+0x98>
+ 32e:	b9 cf       	rjmp	.-142    	; 0x2a2 <main+0xa>
+		{			
+			flashLeft(200);
+ 330:	88 ec       	ldi	r24, 0xC8	; 200
+ 332:	c8 de       	rcall	.-624    	; 0xc4 <flashLeft>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 334:	8f ef       	ldi	r24, 0xFF	; 255
+ 336:	9f ee       	ldi	r25, 0xEF	; 239
+ 338:	20 e0       	ldi	r18, 0x00	; 0
+ 33a:	81 50       	subi	r24, 0x01	; 1
+ 33c:	90 40       	sbci	r25, 0x00	; 0
+ 33e:	20 40       	sbci	r18, 0x00	; 0
+ 340:	e1 f7       	brne	.-8      	; 0x33a <main+0xa2>
+ 342:	00 c0       	rjmp	.+0      	; 0x344 <main+0xac>
+ 344:	00 00       	nop
+			_delay_ms(64);
+			flashRight(80);
+ 346:	80 e5       	ldi	r24, 0x50	; 80
+ 348:	d8 de       	rcall	.-592    	; 0xfa <flashRight>
+ 34a:	ab cf       	rjmp	.-170    	; 0x2a2 <main+0xa>
+
+0000034c <_exit>:
+ 34c:	f8 94       	cli
+
+0000034e <__stop_program>:
+ 34e:	ff cf       	rjmp	.-2      	; 0x34e <__stop_program>
