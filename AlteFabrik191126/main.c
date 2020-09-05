@@ -1,8 +1,9 @@
 /*
- * AlteFabrik191126.c
- *
+ * AlteFabrik191126
+ * Version: 1.0
+ * License: BSD 3-clause "New" or "Revised" license
  * Created: 26.11.2019 23:14:14
- * Author : User
+ * Author : 25mmHg
  * LFUSE : 0x75
  * HFUSE : 0xFF
  *
