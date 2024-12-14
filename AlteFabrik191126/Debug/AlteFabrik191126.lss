@@ -23,11 +23,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  000000e4  00000000  00000000  000019e8  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000038e  00000000  00000000  00001acc  2**0
+ 10 .debug_str    00000385  00000000  00000000  00001acc  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000004c7  00000000  00000000  00001e5a  2**0
+ 11 .debug_loc    000004c7  00000000  00000000  00001e51  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000068  00000000  00000000  00002321  2**0
+ 12 .debug_ranges 00000068  00000000  00000000  00002318  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -83,46 +83,23 @@ Disassembly of section .text:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
 
 00000048 <TxTimedByte>:
-.global TxTimedByte
-; transmit byte in r24 with bit delay in r22 - 15 instructions
-; calling code must set Tx line to idle state (high) or 1st byte may be lost
-; i.e. PORTB |= (1<<UART_Tx)
-TxTimedByte:
-	cli
   48:	f8 94       	cli
-        sbi UART_Port-1, UART_Tx        ; set Tx line to output
   4a:	bb 9a       	sbi	0x17, 3	; 23
-        cbi UART_Port, UART_Tx          ; start bit
   4c:	c3 98       	cbi	0x18, 3	; 24
-	in r0, UART_Port
   4e:	08 b2       	in	r0, 0x18	; 24
-	ldi r25, 3                      ; stop bit + idle state
   50:	93 e0       	ldi	r25, 0x03	; 3
 
 00000052 <TxLoop>:
-TxLoop:
-        ; 8 cycle loop + delay - total = 7 + 3*r22
-	mov delayCount, r22
   52:	26 2f       	mov	r18, r22
 
 00000054 <TxDelay>:
-TxDelay:
-; delay (3 cycle * delayCount) -1
-        dec delayCount
   54:	2a 95       	dec	r18
-        brne TxDelay
   56:	f1 f7       	brne	.-4      	; 0x54 <TxDelay>
-	bst r24, 0			; store lsb in T
   58:	80 fb       	bst	r24, 0
-	bld r0, UART_Tx
   5a:	03 f8       	bld	r0, 3
-	lsr r25
   5c:	96 95       	lsr	r25
-	ror r24
   5e:	87 95       	ror	r24
-	out UART_Port, r0
   60:	08 ba       	out	0x18, r0	; 24
-        brne TxLoop
   62:	b9 f7       	brne	.-18     	; 0x52 <TxLoop>
   64:	18 95       	reti
 
