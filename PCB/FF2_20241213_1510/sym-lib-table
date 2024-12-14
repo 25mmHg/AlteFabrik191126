@@ -1,0 +1,7 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "2024-12-13_15-30-50")(type "KiCad")(uri "C:/Users/joetr/Downloads/ul_LS-A676-P2S1-1-0-20-R33-Z/KiCADv6/2024-12-13_15-30-50.kicad_sym")(options "")(descr ""))
+  (lib (name "B78148S1334J000")(type "KiCad")(uri "C:/Users/joetr/Downloads/LIB_B78148S1334J000/B78148S1334J000/KiCad/B78148S1334J000.kicad_sym")(options "")(descr ""))
+  (lib (name "Library")(type "KiCad")(uri "${KIPRJMOD}/Library.kicad_sym")(options "")(descr ""))
+  (lib (name "FF2.0Library")(type "KiCad")(uri "${KIPRJMOD}/FF2.0Library.kicad_sym")(options "")(descr ""))
+)

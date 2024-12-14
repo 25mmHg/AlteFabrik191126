@@ -1,0 +1,342 @@
+(footprint "B78148S"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(descr "B78148S")
+	(tags "Inductor")
+	(property "Reference" "REF**"
+		(at 1.976514 0.046485 180)
+		(layer "F.SilkS")
+		(uuid "29aa2b5c-6a6b-467b-89c0-3a91cae29191")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+			)
+		)
+	)
+	(property "Value" "B78148S1334J000"
+		(at 0 0 180)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "3444d9c6-c28f-4078-9592-e6936c37353d")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+			)
+		)
+	)
+	(property "Footprint" "KiCad:B78148S"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ee59bb2a-8f6c-4b0d-8744-2a4b392a55f1")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://product.tdk.com/system/files/dam/doc/product/inductor/inductor/lead/data_sheet/30/db/ind_2008/b78108_148s.pdf"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "eb4257af-8e5a-4bd4-8ef9-b3b40d7e7a5f")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" "Epcos 330 uH +/-5% Ferrite Leaded Inductor, Max SRF:2.7MHz, Q:70, 190mA Idc, 6.4 Rdc BC"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f9ef0691-47e0-465d-83fe-a9579d13f964")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Height" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "746c0220-66e1-407d-9709-bd527909ca3e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Mouser Part Number" "871-B78148S1334J000"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "d53bfc77-1935-4533-9bde-096342f9012b")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/EPCOS-TDK/B78148S1334J000?qs=%2FsLciWRBLmBsbhhIHiCB1A%3D%3D"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "825c582d-123e-454d-82b4-45d40d48be34")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Manufacturer_Name" "TDK"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "93a8afaa-99e3-4abd-96ab-a777506b2645")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Manufacturer_Part_Number" "B78148S1334J000"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "5c586441-fedd-4df7-910b-f7a98675acca")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Display" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "4c28acfa-f42b-45ee-97ea-f8f1127544c5")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Display 2" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "cbe6746a-3216-4421-bc8d-4b8261a348a0")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "JLCPCB ID" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "fabaf8de-ba92-4ac3-99a6-5af68f78749c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Manufacturer" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "64d313bd-b34b-4706-b75d-20ecef39ba8c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Part Number" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "74d856ca-e122-45bb-a432-9f3ce053d845")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Specifications" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "9a75136c-4097-4347-a1d5-9c69840fce3d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_circle
+		(center -1.35 0)
+		(end -1.35 0.049999)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "fd702532-6656-4fc4-9417-6f465dc18ef1")
+	)
+	(fp_line
+		(start -2.25 -3)
+		(end 6.55 -3)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "9316bf52-808b-48bf-b193-f29585a61c45")
+	)
+	(fp_line
+		(start -2.25 3)
+		(end -2.25 -3)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "27c822b1-b6bd-4ec3-964a-3ad6e6952d6f")
+	)
+	(fp_line
+		(start 6.549999 3)
+		(end -2.25 3)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "e77564dc-bdff-4140-95c5-78dd081cfeb5")
+	)
+	(fp_line
+		(start 6.55 -3)
+		(end 6.549999 3)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "6c79ec09-4bfe-42e9-9645-ea6380aa9028")
+	)
+	(fp_line
+		(start 2.5 2)
+		(end 2.5 2)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "2d051bc9-e3af-4788-b32b-6bf4591ce865")
+	)
+	(fp_line
+		(start 2.500001 -2)
+		(end 2.500001 -2)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "3b96b819-7b1b-41e0-ab6f-9794706b9f5f")
+	)
+	(fp_arc
+		(start 2.5 2)
+		(mid 0.5 0)
+		(end 2.500001 -2)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "74b58fed-f200-4763-8fec-277e43497d68")
+	)
+	(fp_arc
+		(start 2.500001 -2)
+		(mid 4.5 0)
+		(end 2.5 2)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "517de897-5e91-424e-8e9a-4959427badad")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(uuid "eaa79dfe-ea92-4917-8bad-c698a3608bd7")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+			)
+		)
+	)
+	(pad "1" thru_hole rect
+		(at 0 0)
+		(size 1.5 1.5)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "d2864e73-4c5e-41cd-ba37-f8c341816736")
+	)
+	(pad "2" thru_hole circle
+		(at 5 0)
+		(size 1.5 1.5)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "ed1ab0a0-90d4-4bfb-8caa-2683d3432d37")
+	)
+	(model "C:/Users/joetr/Downloads/LIB_B78148S1334J000/B78148S1334J000/3D/B78148S1334J000.stp"
+		(offset
+			(xyz 2.64 0 7)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 180)
+		)
+	)
+)
